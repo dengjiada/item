@@ -1,0 +1,39 @@
+# IDEA 配置
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Maven 编译产物【所有子模块target全部过滤】
+target/
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# VS Code
+.vscode/
+
+# 日志文件
+*.log
+logs/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.tmp
+*.bak
+
+# 本地生成的目录树文件，不上传
+tree.txt

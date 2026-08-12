@@ -1,0 +1,27 @@
+# 应用名称
+spring:
+  application:
+    name: item
+  # MySql数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/myitem?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: root
+    password: 1234
+
+# MyBatis配置
+mybatis:
+  # mapper映射文件存放路径
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    # 开启下划线自动转驼峰
+    map-underscore-to-camel-case: true
+
+# 占用端口
+server:
+  port: 8080
+
+logging:
+  level:
+    # root：全局所有包默认级别
+    root: INFO
