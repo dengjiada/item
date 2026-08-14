@@ -1,50 +1,61 @@
 package com.tianzhou.item.module.service;
 
 import com.tianzhou.item.module.entity.Item;
-import com.tianzhou.item.module.mapper.ConsoleMapper;
+import com.tianzhou.item.module.mapper.ItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.List;
 
 @Service
-public class ConsoleService {
-
+public class ItemService {
     @Autowired
-    private ConsoleMapper consoleMapper;
+    private ItemMapper itemMapper;
+
+    //查询商品列表
+    public List<Item> list() {
+        return itemMapper.list();
+    }
+
+    //根据商品id查询商品详情
+    public Item getItemInfo(Long id) {
+        return itemMapper.getItemInfo(id);
+    }
 
     //新增商品
-    public int createItem(String coverImages, String name, BigDecimal price, String introduction) {
+    public int createItem(String coverImages, String name, Float price, String introduction) {
         //1.拿到当前的时间戳
         int timeStamp = (int) (System.currentTimeMillis() / 1000);
         //2.封装商品更新字段
         Item item = new Item().setCoverImages(coverImages)
                 .setName(name)
-                .setPrice(price)
+                //Float转成BigDecimal
+                .setPrice(BigDecimal.valueOf(price))
                 .setIntroduction(introduction)
                 .setCreateTime(timeStamp).setUpdateTime(timeStamp).setIsDeleted(0);
         //3.调用mapper
-        return consoleMapper.createItem(item);
+        return itemMapper.createItem(item);
     }
 
     //根据商品id修改商品
-    public int updateItem(BigInteger id, String coverImages, String name, BigDecimal price, String introduction) {
+    public int updateItem(Long id, String coverImages, String name, Float price, String introduction) {
         //1.拿到当前时间戳
         int timeStamp = (int) (System.currentTimeMillis() / 1000);
         //2.封装商品更新字段
         Item item = new Item().setId(id)
                 .setCoverImages(coverImages)
                 .setName(name)
-                .setPrice(price)
+                //Float转成BigDecimal
+                .setPrice(BigDecimal.valueOf(price))
                 .setIntroduction(introduction)
                 .setUpdateTime(timeStamp);
         //3.调用mapper
-        return consoleMapper.updateItem(item);
+        return itemMapper.updateItem(item);
     }
 
     //根据商品id删除商品
-    public int deleteItem(BigInteger id) {
-        return consoleMapper.deleteItem(id, (int) (System.currentTimeMillis() / 1000));
+    public int deleteItem(Long id) {
+        return itemMapper.deleteItem(id, (int) (System.currentTimeMillis() / 1000));
     }
 }

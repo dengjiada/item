@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 @Data
 @Accessors(chain = true)
@@ -14,7 +13,7 @@ import java.math.BigInteger;
 @NoArgsConstructor
 public class Item {
     //商品id
-    private BigInteger id;
+    private Long id;
     //商品轮播图，用$拼接
     private String coverImages;
     //商品名字

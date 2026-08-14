@@ -4,23 +4,23 @@ import com.tianzhou.item.app.domain.ItemInfoVO;
 import com.tianzhou.item.app.domain.ItemListFeedVO;
 import com.tianzhou.item.app.domain.ItemListVO;
 import com.tianzhou.item.module.entity.Item;
-import com.tianzhou.item.module.service.AppService;
+import com.tianzhou.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @Slf4j
-public class AppController {
+public class ItemController {
 
     @Autowired
-    private AppService appService;
+    private ItemService itemService;
 
     /**
      * 查询商品列表
@@ -32,7 +32,7 @@ public class AppController {
         log.info("===查询商品列表===");
 
         //1.拿到商品列表
-        List<Item> itemList = appService.list();
+        List<Item> itemList = itemService.list();
         //如果列表为空，直接返回
         if (itemList.isEmpty()) {
             return new ItemListFeedVO(new ArrayList<>());
@@ -47,7 +47,8 @@ public class AppController {
             //4.为ItemListVO赋值
             ItemListVO itemListVO = new ItemListVO().setItemId(item.getId())
                     .setName(item.getName())
-                    .setPrice(item.getPrice())
+                    //BigDecimal转换成Float
+                    .setPrice(item.getPrice().floatValue())
                     .setWallImage(wallImage);
             //5.添加进list中
             itemListVOList.add(itemListVO);
@@ -63,11 +64,11 @@ public class AppController {
      * @return
      */
     @RequestMapping("/item/info")
-    public ItemInfoVO getItemInfo(@RequestParam(value = "itemId") BigInteger id) {
+    public ItemInfoVO getItemInfo(@RequestParam(value = "itemId") Long id) {
         log.info("根据商品id查询商品详情，itemId:{}", id);
 
         //1.拿到item对象
-        Item item = appService.getItemInfo(id);
+        Item item = itemService.getItemInfo(id);
         //商品不存在，抛异常
         if (item == null) {
             throw new RuntimeException("商品不存在！");
@@ -77,9 +78,10 @@ public class AppController {
         String coverImages = item.getCoverImages();
         String[] split = coverImages.split("\\$");
         //3.封装ItemInfoVO属性并返回
-        return new ItemInfoVO().setCoverImages(split)
+        return new ItemInfoVO().setCoverImages(Arrays.asList(split))
                 .setName(item.getName())
-                .setPrice(item.getPrice())
+                //BigDecimal转换成Float
+                .setPrice(item.getPrice().floatValue())
                 .setIntroduction(item.getIntroduction());
     }
 }

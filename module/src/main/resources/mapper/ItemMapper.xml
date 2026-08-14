@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace 必须对应Mapper接口全类名 -->
-<mapper namespace="com.tianzhou.item.module.mapper.ConsoleMapper">
+<mapper namespace="com.tianzhou.item.module.mapper.ItemMapper">
     <insert id="createItem" parameterType="com.tianzhou.item.module.entity.Item">
         insert into item(cover_images, name, price, introduction, create_time, update_time, is_deleted)
         values (#{item.coverImages}, #{item.name}, #{item.price}, #{item.introduction}, #{item.createTime},
