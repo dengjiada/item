@@ -16,6 +16,8 @@ mybatis:
   configuration:
     # 开启下划线自动转驼峰
     map-underscore-to-camel-case: true
+    # 开启SQL日志输出
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # 占用端口
 server:

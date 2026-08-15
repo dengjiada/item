@@ -30,7 +30,8 @@ public class ItemController {
             @RequestParam(value = "introduction") String introduction
     ) {
         log.info("新增商品，coverImages:{}，name:{}，price:{}，introduction:{}", coverImages, name, price, introduction);
-        return itemService.createItem(coverImages, name, price, introduction) > 0 ? "成功" : "失败";
+        Long id = itemService.createItem(coverImages, name, price, introduction);
+        return id != null ? "自增id是：" + id : "失败";
     }
 
     /**
