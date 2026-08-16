@@ -57,4 +57,17 @@ public class ItemService {
     public int deleteItem(Long id) {
         return itemMapper.deleteItem(id, (int) (System.currentTimeMillis() / 1000));
     }
+
+    //查询商品列表分页数据
+    public List<Item> selectItemPage(int page, int pageSize) {
+        //1.计算offset
+        int offset = (page - 1) * pageSize;
+        //2.调用mapper，查询分页数据
+        return itemMapper.selectPage(offset,pageSize);
+    }
+
+    //查询商品总条数
+    public Long countItemTotal() {
+        return itemMapper.countItemTotal();
+    }
 }
