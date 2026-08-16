@@ -15,7 +15,7 @@ public interface ItemMapper {
     List<Item> list();
 
     //根据商品id查询商品详情
-    @Select("select cover_images,name,price,introduction from item where id = #{id} and is_deleted = 0")
+    @Select("select cover_images,name,price,introduction,create_time,update_time from item where id = #{id} and is_deleted = 0")
     Item getItemInfo(@Param(value = "id") Long id);
 
     //新增商品

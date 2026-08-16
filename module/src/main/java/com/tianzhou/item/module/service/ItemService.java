@@ -63,7 +63,7 @@ public class ItemService {
         //1.计算offset
         int offset = (page - 1) * pageSize;
         //2.调用mapper，查询分页数据
-        return itemMapper.selectPage(offset,pageSize);
+        return itemMapper.selectPage(offset, pageSize);
     }
 
     //查询商品总条数

@@ -1,5 +1,6 @@
 package com.tianzhou.item.console.controller;
 
+import com.tianzhou.item.console.domain.ItemInfoVO;
 import com.tianzhou.item.console.domain.ItemListFeedVO;
 import com.tianzhou.item.console.domain.ItemListVO;
 import com.tianzhou.item.module.entity.Item;
@@ -10,7 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -105,5 +111,43 @@ public class ItemController {
         return new ItemListFeedVO().setList(itemListVOList)
                 .setTotal(total)
                 .setPageSize(pageSize);
+    }
+
+    @RequestMapping("/item/info")
+    public ItemInfoVO getItemInfo(@RequestParam(value = "itemId") Long id) {
+        //1.调用service，拿到item对象
+        Item item = itemService.getItemInfo(id);
+        //如果item为null
+        if (item == null) {
+            //返回一个VO空对象，这个阶段先这样搞，后续可能修改
+            return new ItemInfoVO();
+        }
+        //不为空
+        //2.解析item的创建时间和更新时间
+        //2.1拿到创建时间和更新时间的时间戳
+        Integer itemCreateTime = item.getCreateTime();
+        Integer itemUpdateTime = item.getUpdateTime();
+        //2.2指定要转化的时间格式
+        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        //2.3指定所在时区
+        ZoneId zone = ZoneId.of("Asia/Shanghai");
+        //2.4将时间戳转换成LocalDateTime
+        LocalDateTime createLocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(itemCreateTime.longValue()), zone);
+        LocalDateTime updateLocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(itemUpdateTime.longValue()), zone);
+        //2.5转换成对应时间格式
+        String createTime = createLocalDateTime.format(pattern);
+        String updateTime = updateLocalDateTime.format(pattern);
+
+        //3.解析轮播图
+        String[] coverImages = item.getCoverImages().split("\\$");
+
+        //4.封装ItemInfoVO并返回
+        return new ItemInfoVO().setCoverImages(Arrays.asList(coverImages))
+                .setName(item.getName())
+                //将BigDecimal转换成Float
+                .setPrice(item.getPrice().floatValue())
+                .setIntroduction(item.getIntroduction())
+                .setCreateTime(createTime)
+                .setUpdateTime(updateTime);
     }
 }
