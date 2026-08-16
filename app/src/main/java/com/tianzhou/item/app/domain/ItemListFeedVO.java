@@ -13,4 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ItemListFeedVO {
     private List<ItemListVO> list;
+    //瀑布流是否到结尾，现阶段为了方便就用isEnd，以后可能会修改
+    private Boolean isEnd;
 }

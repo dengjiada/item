@@ -28,33 +28,35 @@ public class ItemController {
      * @return
      */
     @RequestMapping("/item/list")
-    public ItemListFeedVO list() {
+    public ItemListFeedVO list(@RequestParam(value = "page") Integer page) {
         log.info("===查询商品列表===");
+        //1.先定死pageSize是10
+        int pageSize = 10;
 
-        //1.拿到商品列表
-        List<Item> itemList = itemService.list();
-        //如果列表为空，直接返回
-        if (itemList.isEmpty()) {
-            return new ItemListFeedVO(new ArrayList<>());
-        }
-        //不为空，往下走
+        //2.拿到商品列表
+        List<Item> itemList = itemService.selectItemPage(page, pageSize);
+
+        //3.封装VO
         List<ItemListVO> itemListVOList = new ArrayList<>(itemList.size());
-        //2.循环拿东西
         for (Item item : itemList) {
-            //3.拿到轮播图的第一张图，也就是wallImage
-            String coverImages = item.getCoverImages();
-            String wallImage = coverImages.split("\\$")[0];
-            //4.为ItemListVO赋值
+            //3.1拿到轮播图的第一张图，也就是wallImage
+            String wallImage = item.getCoverImages().split("\\$")[0];
+            //3.2为ItemListVO赋值
             ItemListVO itemListVO = new ItemListVO().setItemId(item.getId())
                     .setName(item.getName())
                     //BigDecimal转换成Float
                     .setPrice(item.getPrice().floatValue())
                     .setWallImage(wallImage);
-            //5.添加进list中
+            //3.3添加进list中
             itemListVOList.add(itemListVO);
         }
+        //4.判断是否到瀑布流结尾，没有下一页
+        //我的做法是拿到分页后的itemList的size，如果size小于pageSize（每页有多少条数据），说明是最后一页，返回false
+        //如果相等，则认为不是最后一页，但实际上最后一页的数据条数也可能刚好和pageSize相等，如果是这样的话，再多查一次就行
+        boolean isEnd = itemListVOList.size() < pageSize;
         //6.返回
-        return new ItemListFeedVO(itemListVOList);
+        return new ItemListFeedVO().setList(itemListVOList)
+                .setIsEnd(isEnd);
     }
 
     /**
