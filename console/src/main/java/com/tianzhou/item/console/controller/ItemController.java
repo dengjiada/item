@@ -81,17 +81,18 @@ public class ItemController {
     }
 
     /**
-     * 查询商品列表
+     * 查询商品分页列表，模糊查询
      *
      * @param page
      * @return
      */
     @RequestMapping("/item/list")
-    public ItemListFeedVO list(@RequestParam(value = "page") Integer page) {
+    public ItemListFeedVO list(@RequestParam(value = "page") Integer page,
+                               @RequestParam(value = "keyword", required = false) String keyword) {
         //1.先定死pageSize=10
         int pageSize = 10;
         //2.查询分页数据
-        List<Item> itemList = itemService.selectItemPage(page, pageSize);
+        List<Item> itemList = itemService.selectItemPage(page, pageSize, keyword);
         //3.查询总条数
         Long total = itemService.countItemTotal();
         //4.封装ItemListVO

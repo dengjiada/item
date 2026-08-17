@@ -35,4 +35,15 @@
         </set>
         where id = #{item.id}
     </update>
+
+    <select id="selectPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.Item">
+        select id, cover_images, name, price
+        from item
+        where is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            and name like concat('%', #{keyword}, '%')
+        </if>
+        order by id
+        limit #{offset},#{pageSize}
+    </select>
 </mapper>

@@ -29,8 +29,8 @@ public interface ItemMapper {
     int deleteItem(@Param(value = "id") Long id, @Param(value = "timeStamp") int timeStamp);
 
     //根据分页参数查询分页数据
-    @Select("select id,cover_images,name,price from item where is_deleted = 0 order by id limit #{offset},#{pageSize}")
-    List<Item> selectPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize);
+    //@Select("select id,cover_images,name,price from item where is_deleted = 0 order by id limit #{offset},#{pageSize}")
+    List<Item> selectPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize, @Param(value = "keyword") String keyword);
 
     //查询商品总条数
     @Select("select count(*) from item where is_deleted = 0")

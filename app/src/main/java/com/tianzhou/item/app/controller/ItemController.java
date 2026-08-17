@@ -23,18 +23,19 @@ public class ItemController {
     private ItemService itemService;
 
     /**
-     * 查询商品列表
+     * 查询商品分页列表，模糊查询
      *
      * @return
      */
     @RequestMapping("/item/list")
-    public ItemListFeedVO list(@RequestParam(value = "page") Integer page) {
+    public ItemListFeedVO list(@RequestParam(value = "page") Integer page,
+                               @RequestParam(value = "keyword", required = false) String keyword) {
         log.info("===查询商品列表===");
         //1.先定死pageSize是10
         int pageSize = 10;
 
         //2.拿到商品列表
-        List<Item> itemList = itemService.selectItemPage(page, pageSize);
+        List<Item> itemList = itemService.selectItemPage(page, pageSize, keyword);
 
         //3.封装VO
         List<ItemListVO> itemListVOList = new ArrayList<>(itemList.size());

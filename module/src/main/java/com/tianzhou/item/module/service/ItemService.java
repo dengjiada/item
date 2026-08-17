@@ -59,11 +59,11 @@ public class ItemService {
     }
 
     //查询商品列表分页数据
-    public List<Item> selectItemPage(int page, int pageSize) {
+    public List<Item> selectItemPage(int page, int pageSize, String keyword) {
         //1.计算offset
         int offset = (page - 1) * pageSize;
         //2.调用mapper，查询分页数据
-        return itemMapper.selectPage(offset, pageSize);
+        return itemMapper.selectPage(offset, pageSize, keyword);
     }
 
     //查询商品总条数
