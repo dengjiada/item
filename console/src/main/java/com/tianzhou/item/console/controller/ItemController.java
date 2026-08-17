@@ -113,6 +113,12 @@ public class ItemController {
                 .setPageSize(pageSize);
     }
 
+    /**
+     * 根据商品id查询商品详情
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping("/item/info")
     public ItemInfoVO getItemInfo(@RequestParam(value = "itemId") Long id) {
         //1.调用service，拿到item对象

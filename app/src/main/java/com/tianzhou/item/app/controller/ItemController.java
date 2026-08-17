@@ -53,7 +53,7 @@ public class ItemController {
         //4.判断是否到瀑布流结尾，没有下一页
         //我的做法是拿到分页后的itemList的size，如果size小于pageSize（每页有多少条数据），说明是最后一页，返回false
         //如果相等，则认为不是最后一页，但实际上最后一页的数据条数也可能刚好和pageSize相等，如果是这样的话，再多查一次就行
-        boolean isEnd = itemListVOList.size() < pageSize;
+        boolean isEnd = itemList.size() < pageSize;
         //6.返回
         return new ItemListFeedVO().setList(itemListVOList)
                 .setIsEnd(isEnd);
