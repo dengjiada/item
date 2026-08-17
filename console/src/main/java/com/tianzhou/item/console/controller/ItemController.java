@@ -1,5 +1,6 @@
 package com.tianzhou.item.console.controller;
 
+import com.tianzhou.item.console.domain.ItemDTO;
 import com.tianzhou.item.console.domain.ItemInfoVO;
 import com.tianzhou.item.console.domain.ItemListFeedVO;
 import com.tianzhou.item.console.domain.ItemListVO;
@@ -7,9 +8,7 @@ import com.tianzhou.item.module.entity.Item;
 import com.tianzhou.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -156,5 +155,17 @@ public class ItemController {
                 .setIntroduction(item.getIntroduction())
                 .setCreateTime(createTime)
                 .setUpdateTime(updateTime);
+    }
+
+    /**
+     * 做个接收DTO测试，简单demo
+     *
+     * @param itemDTO
+     * @return
+     */
+    @PostMapping("/item/insert")
+    public String createItem(@RequestBody ItemDTO itemDTO) {
+        log.info("新增商品，itemDTO:{}", itemDTO);
+        return "接收DTO成功!";
     }
 }
