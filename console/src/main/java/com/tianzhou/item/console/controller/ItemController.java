@@ -41,8 +41,18 @@ public class ItemController {
             @RequestParam(value = "introduction") String introduction
     ) {
         log.info("新增商品，coverImages:{}，name:{}，price:{}，introduction:{}", coverImages, name, price, introduction);
-        Long id = itemService.createItem(coverImages, name, price, introduction);
-        return id != null ? "自增id是：" + id : "失败";
+        try {
+            Long itemId = itemService.edit(null, coverImages, name, price, introduction);
+            return "自增id是：" + itemId;
+        } catch (RuntimeException e) {
+            log.error("an error occurred", e);
+            String msg = e.getMessage();
+            if ("create item failed".equals(msg)) {
+                return "新增失败";
+            }
+            // 参数校验类错误统一返回失败
+            return "失败";
+        }
     }
 
     /**
@@ -64,7 +74,20 @@ public class ItemController {
             @RequestParam(value = "introduction") String introduction
     ) {
         log.info("根据商品id修改商品，itemId:{}，coverImages:{}，name:{}，price:{}，introduction:{}", id, coverImages, name, price, introduction);
-        return itemService.updateItem(id, coverImages, name, price, introduction) > 0 ? "成功" : "失败";
+        try {
+            Long itemId = itemService.edit(id, coverImages, name, price, introduction);
+            return "修改商品的id是：" + itemId;
+        } catch (RuntimeException e) {
+            log.error("an error occurred", e);
+            String msg = e.getMessage();
+            if ("item id not exist".equals(msg)) {
+                return "id不存在";
+            }
+            if ("update item failed".equals(msg)) {
+                return "更新失败";
+            }
+            return "失败";
+        }
     }
 
     /**
@@ -166,6 +189,7 @@ public class ItemController {
     @PostMapping("/item/insert")
     public String createItem(@RequestBody ItemDTO itemDTO) {
         log.info("新增商品，itemDTO:{}", itemDTO);
+        int i = 1 / 0;
         return "接收DTO成功!";
     }
 }

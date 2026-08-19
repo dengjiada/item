@@ -74,7 +74,8 @@ public class ItemController {
         Item item = itemService.getItemInfo(id);
         //商品不存在，抛异常
         if (item == null) {
-            throw new RuntimeException("商品不存在！");
+            //返回一个VO空对象，这个阶段先这样搞，后续可能修改
+            return new ItemInfoVO();
         }
         //商品存在，往下走
         //2.按照$分割cover_images
