@@ -10,33 +10,27 @@ import java.util.List;
 
 @Mapper
 public interface ItemMapper {
-    //查询商品列表
-    @Select("select id,cover_images,name,price from item where is_deleted = 0")
-    List<Item> list();
-
-    //根据商品id查询商品详情
+    //根据商品id查询商品详情，需要判断逻辑删除标记（is_deleted）
     @Select("select cover_images,name,price,introduction,create_time,update_time from item where id = #{id} and is_deleted = 0")
-    Item getItemInfo(@Param(value = "id") Long id);
+    Item getById(@Param(value = "id") Long id);
+
+    //根据商品id查询商品详情，不需要判断逻辑删除标记（is_deleted）
+    @Select("select * from item where id = #{id}")
+    Item extractById(@Param(value = "id") Long id);
 
     //新增商品
-    int createItem(@Param(value = "item") Item item);
+    int insert(@Param(value = "item") Item item);
 
     //根据商品id修改商品信息
-    int updateItem(@Param(value = "item") Item item);
+    int update(@Param(value = "item") Item item);
 
     //根据商品id删除商品
     @Update("update item set is_deleted = 1,update_time = #{timeStamp} where id = #{id} limit 1")
-    int deleteItem(@Param(value = "id") Long id, @Param(value = "timeStamp") int timeStamp);
+    int delete(@Param(value = "id") Long id, @Param(value = "timeStamp") int timeStamp);
 
     //根据分页参数查询分页数据
-    //@Select("select id,cover_images,name,price from item where is_deleted = 0 order by id limit #{offset},#{pageSize}")
-    List<Item> selectPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize, @Param(value = "keyword") String keyword);
+    List<Item> selectItemPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize, @Param(value = "keyword") String keyword);
 
     //查询商品总条数
-    //@Select("select count(*) from item where is_deleted = 0")
     Long countItemTotal(@Param(value = "keyword") String keyword);
-
-    //根据商品id查询商品完整信息
-    @Select("select * from item where id = #{id}")
-    Item selectItemById(@Param(value = "id") Long id);
 }

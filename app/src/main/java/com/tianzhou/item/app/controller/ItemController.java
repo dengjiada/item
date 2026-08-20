@@ -71,8 +71,8 @@ public class ItemController {
         log.info("根据商品id查询商品详情，itemId:{}", id);
 
         //1.拿到item对象
-        Item item = itemService.getItemInfo(id);
-        //商品不存在，抛异常
+        Item item = itemService.getById(id);
+        //商品不存在
         if (item == null) {
             //返回一个VO空对象，这个阶段先这样搞，后续可能修改
             return new ItemInfoVO();

@@ -99,7 +99,7 @@ public class ItemController {
     @RequestMapping("/item/delete")
     public String deleteItem(@RequestParam(value = "itemId") Long id) {
         log.info("根据商品id删除商品，itemId:{}", id);
-        return itemService.deleteItem(id) > 0 ? "成功" : "失败";
+        return itemService.delete(id) > 0 ? "成功" : "失败";
     }
 
     /**
@@ -145,7 +145,7 @@ public class ItemController {
     @RequestMapping("/item/info")
     public ItemInfoVO getItemInfo(@RequestParam(value = "itemId") Long id) {
         //1.调用service，拿到item对象
-        Item item = itemService.getItemInfo(id);
+        Item item = itemService.getById(id);
         //如果item为null
         if (item == null) {
             //返回一个VO空对象，这个阶段先这样搞，后续可能修改
@@ -187,7 +187,7 @@ public class ItemController {
      * @return
      */
     @PostMapping("/item/insert")
-    public String createItem(@RequestBody ItemDTO itemDTO) {
+    public String insertItem(@RequestBody ItemDTO itemDTO) {
         log.info("新增商品，itemDTO:{}", itemDTO);
         int i = 1 / 0;
         return "接收DTO成功!";

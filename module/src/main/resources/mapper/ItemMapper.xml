@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace 必须对应Mapper接口全类名 -->
 <mapper namespace="com.tianzhou.item.module.mapper.ItemMapper">
-    <insert id="createItem" parameterType="com.tianzhou.item.module.entity.Item" useGeneratedKeys="true"
+    <insert id="insert" parameterType="com.tianzhou.item.module.entity.Item" useGeneratedKeys="true"
             keyProperty="id">
         insert into item(
         <if test="item.coverImages != null and item.coverImages != ''">cover_images,</if>
@@ -24,7 +24,7 @@
         )
     </insert>
 
-    <update id="updateItem" parameterType="com.tianzhou.item.module.entity.Item">
+    <update id="update" parameterType="com.tianzhou.item.module.entity.Item">
         update item
         <set>
             <if test="item.coverImages != null and item.coverImages != ''">cover_images = #{item.coverImages},</if>
@@ -36,7 +36,7 @@
         where id = #{item.id}
     </update>
 
-    <select id="selectPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.Item">
+    <select id="selectItemPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.Item">
         select id, cover_images, name, price
         from item
         where is_deleted = 0

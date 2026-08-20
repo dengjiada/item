@@ -13,14 +13,24 @@ public class ItemService {
     @Autowired
     private ItemMapper itemMapper;
 
-    //查询商品列表
-    public List<Item> list() {
-        return itemMapper.list();
+    //根据商品id查询商品详情，需要判断逻辑删除标记（is_deleted）
+    public Item getById(Long id) {
+        return itemMapper.getById(id);
     }
 
-    //根据商品id查询商品详情
-    public Item getItemInfo(Long id) {
-        return itemMapper.getItemInfo(id);
+    //根据商品id查询商品详情，不需要判断逻辑删除标记（is_deleted）
+    public Item extractById(Long id) {
+        return itemMapper.extractById(id);
+    }
+
+    //新增商品
+    public int insert(Item item) {
+        return itemMapper.insert(item);
+    }
+
+    //修改商品
+    public int update(Item item) {
+        return itemMapper.update(item);
     }
 
     //将insert，update合成成edit
@@ -63,8 +73,8 @@ public class ItemService {
         if (id == null) {
             //3.1.1 为insert的对象添加剩余的值
             item.setCreateTime((int) (System.currentTimeMillis() / 1000)).setIsDeleted(0);
-            //3.1.2 调用mapper方法
-            int rows = itemMapper.createItem(item);
+            //3.1.2 调用insert方法
+            int rows = insert(item);
             //3.1.3 如果rows=0，认为insert失败，抛异常
             if (rows == 0) {
                 throw new RuntimeException("create item failed");
@@ -77,15 +87,15 @@ public class ItemService {
         if (id <= 0) {
             throw new RuntimeException("id must greater than 0");
         }
-        //调用mapper查询id对应的entity是否在数据库中
-        Item item1 = itemMapper.selectItemById(id);
+        //查询id对应的entity是否在数据库中
+        Item item1 = extractById(id);
         if (item1 == null) {
             throw new RuntimeException("item id not exist");
         }
         //3.2.2 为update的对象添加剩余的值
         item.setId(id);
-        //3.2.3 调用mapper方法
-        int rows = itemMapper.updateItem(item);
+        //3.2.3 调用update方法
+        int rows = update(item);
         //3.2.4 如果rows=0，认为update失败，抛异常
         if (rows == 0) {
             throw new RuntimeException("update item failed");
@@ -95,8 +105,8 @@ public class ItemService {
     }
 
     //根据商品id删除商品
-    public int deleteItem(Long id) {
-        return itemMapper.deleteItem(id, (int) (System.currentTimeMillis() / 1000));
+    public int delete(Long id) {
+        return itemMapper.delete(id, (int) (System.currentTimeMillis() / 1000));
     }
 
     //查询商品列表分页数据
@@ -104,7 +114,7 @@ public class ItemService {
         //1.计算offset
         int offset = (page - 1) * pageSize;
         //2.调用mapper，查询分页数据
-        return itemMapper.selectPage(offset, pageSize, keyword);
+        return itemMapper.selectItemPage(offset, pageSize, keyword);
     }
 
     //查询商品总条数
