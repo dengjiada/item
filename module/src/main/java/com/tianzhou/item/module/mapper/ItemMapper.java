@@ -33,8 +33,8 @@ public interface ItemMapper {
     List<Item> selectPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize, @Param(value = "keyword") String keyword);
 
     //查询商品总条数
-    @Select("select count(*) from item where is_deleted = 0")
-    Long countItemTotal();
+    //@Select("select count(*) from item where is_deleted = 0")
+    Long countItemTotal(@Param(value = "keyword") String keyword);
 
     //根据商品id查询商品完整信息
     @Select("select * from item where id = #{id}")

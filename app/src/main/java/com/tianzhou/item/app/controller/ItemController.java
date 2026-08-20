@@ -88,4 +88,15 @@ public class ItemController {
                 .setPrice(item.getPrice().floatValue())
                 .setIntroduction(item.getIntroduction());
     }
+
+    /**
+     * 测试全局异常处理类
+     *
+     * @return
+     */
+    @RequestMapping("/item/test")
+    public String testGlobalExceptionHandler() {
+        int i = 1 / 0;
+        return "OK";
+    }
 }

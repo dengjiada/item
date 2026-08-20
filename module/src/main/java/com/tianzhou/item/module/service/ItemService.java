@@ -23,36 +23,6 @@ public class ItemService {
         return itemMapper.getItemInfo(id);
     }
 
-    //新增商品
-//    public Long createItem(String coverImages, String name, Float price, String introduction) {
-//        //1.拿到当前的时间戳
-//        int timeStamp = (int) (System.currentTimeMillis() / 1000);
-//        //2.封装商品更新字段
-//        Item item = Item.create().setCoverImages(coverImages)
-//                .setName(name)
-//                //Float转成BigDecimal
-//                .setPrice(BigDecimal.valueOf(price))
-//                .setIntroduction(introduction)
-//                .setCreateTime(timeStamp)
-//                .setIsDeleted(0);
-//        //3.调用mapper
-//        itemMapper.createItem(item);
-//        return item.getId();
-//    }
-
-    //根据商品id修改商品
-//    public int updateItem(Long id, String coverImages, String name, Float price, String introduction) {
-//        //1.封装商品更新字段
-//        Item item = Item.create().setId(id)
-//                .setCoverImages(coverImages)
-//                .setName(name)
-//                //Float转成BigDecimal
-//                .setPrice(BigDecimal.valueOf(price))
-//                .setIntroduction(introduction);
-//        //2.调用mapper
-//        return itemMapper.updateItem(item);
-//    }
-
     //将insert，update合成成edit
     public Long edit(Long id, String coverImages, String name, Float price, String introduction) {
         //1. 校验参数
@@ -138,7 +108,7 @@ public class ItemService {
     }
 
     //查询商品总条数
-    public Long countItemTotal() {
-        return itemMapper.countItemTotal();
+    public Long countItemTotal(String keyword) {
+        return itemMapper.countItemTotal(keyword);
     }
 }

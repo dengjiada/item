@@ -115,8 +115,8 @@ public class ItemController {
         int pageSize = 10;
         //2.查询分页数据
         List<Item> itemList = itemService.selectItemPage(page, pageSize, keyword);
-        //3.查询总条数
-        Long total = itemService.countItemTotal();
+        //3.查询符合条件的总条数
+        Long total = itemService.countItemTotal(keyword);
         //4.封装ItemListVO
         List<ItemListVO> itemListVOList = new ArrayList<>(itemList.size());
         for (Item item : itemList) {

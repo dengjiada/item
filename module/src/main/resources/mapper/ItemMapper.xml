@@ -46,4 +46,12 @@
         order by id
         limit #{offset},#{pageSize}
     </select>
+
+    <select id="countItemTotal" resultType="java.lang.Long" parameterType="java.lang.String">
+        select count(*) from item
+        where is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            and name like concat('%',#{keyword},'%')
+        </if>
+    </select>
 </mapper>
