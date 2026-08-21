@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface ItemMapper {
     //根据商品id查询商品详情，需要判断逻辑删除标记（is_deleted）
-    @Select("select cover_images,name,price,introduction,create_time,update_time from item where id = #{id} and is_deleted = 0")
+    @Select("select * from item where id = #{id} and is_deleted = 0")
     Item getById(@Param(value = "id") Long id);
 
     //根据商品id查询商品详情，不需要判断逻辑删除标记（is_deleted）
