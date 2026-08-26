@@ -25,7 +25,7 @@ public interface ItemMapper {
     int update(@Param(value = "item") Item item);
 
     //根据商品id删除商品
-    @Update("update item set is_deleted = 1,update_time = #{timeStamp} where id = #{id} limit 1")
+    @Update("update item set is_deleted = 1,update_time = #{timeStamp} where id = #{id} and is_deleted = 0 limit 1")
     int delete(@Param(value = "id") Long id, @Param(value = "timeStamp") int timeStamp);
 
     //根据分页参数查询分页数据
