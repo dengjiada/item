@@ -63,7 +63,7 @@ public class ItemService {
         }
 
         //2.创建item对象
-        Item item = Item.create().setCoverImages(coverImages)
+        Item item = new Item().setCoverImages(coverImages)
                 .setName(name)
                 .setPrice(BigDecimal.valueOf(price))
                 .setIntroduction(introduction);
@@ -72,7 +72,7 @@ public class ItemService {
         //3.1 id为null，进入insert分支
         if (id == null) {
             //3.1.1 为insert的对象添加剩余的值
-            item.setCreateTime((int) (System.currentTimeMillis() / 1000)).setIsDeleted(0);
+            item.setCreateTime((int) (System.currentTimeMillis() / 1000L)).setIsDeleted(0);
             //3.1.2 调用insert方法
             int rows = insert(item);
             //3.1.3 如果rows=0，认为insert失败，抛异常
@@ -106,7 +106,7 @@ public class ItemService {
 
     //根据商品id删除商品
     public int delete(Long id) {
-        return itemMapper.delete(id, (int) (System.currentTimeMillis() / 1000));
+        return itemMapper.delete(id, (int) (System.currentTimeMillis() / 1000L));
     }
 
     //查询商品列表分页数据
