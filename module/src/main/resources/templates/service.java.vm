@@ -1,0 +1,44 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * $!{table.comment} 业务层
+ * @author ${author}
+ * @since ${date}
+ */
+
+@Service
+public class ${table.serviceName} {
+    @Autowired
+    private ${table.mapperName} mapper;
+
+    //根据id查询详情，需要判断逻辑删除标记（is_deleted）
+    public ${entity} getById(Long id) {
+        return mapper.getById(id);
+    }
+
+    //根据id查询详情，不需要判断逻辑删除标记（is_deleted）
+    public ${entity} extractById(Long id) {
+        return mapper.extractById(id);
+    }
+
+    //新增
+    public int insert(${entity} entity) {
+        return mapper.insert(entity);
+    }
+
+    //修改
+    public int update(${entity} entity) {
+        return mapper.update(entity);
+    }
+
+    //根据id删除逻辑删除
+    public int delete(Long id) {
+        return mapper.delete(id,(int) (System.currentTimeMillis() / 1000));
+    }
+}
