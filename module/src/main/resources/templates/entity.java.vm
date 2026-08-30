@@ -26,13 +26,7 @@ public class ${entity} {
     @TableId(value = "${field.name}", type = IdType.AUTO)
     #end
     #if(!$field.keyFlag)
-    #if($field.propertyName == "updateTime")
-    @TableField(value = "${field.name}", fill = FieldFill.INSERT_UPDATE)
-    #elseif($field.propertyName == "createTime")
-    @TableField(value = "${field.name}", fill = FieldFill.INSERT)
-    #else
     @TableField(value = "${field.name}")
-    #end
     #end
     private ${field.propertyType} ${field.propertyName};
 

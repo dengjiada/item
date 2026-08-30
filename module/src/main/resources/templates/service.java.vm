@@ -39,6 +39,6 @@ public class ${table.serviceName} {
 
     //根据id删除逻辑删除
     public int delete(Long id) {
-        return mapper.delete(id,(int) (System.currentTimeMillis() / 1000));
+        return mapper.delete(id,(int) (System.currentTimeMillis() / 1000L));
     }
 }

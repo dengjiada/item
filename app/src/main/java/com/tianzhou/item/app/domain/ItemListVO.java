@@ -18,4 +18,6 @@ public class ItemListVO {
     private String name;
     //商品价格
     private Float price;
+    //商品分类名
+    private String categoryName;
 }

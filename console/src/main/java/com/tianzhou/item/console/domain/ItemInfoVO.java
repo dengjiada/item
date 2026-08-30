@@ -20,6 +20,10 @@ public class ItemInfoVO {
     private Float price;
     //商品介绍
     private String introduction;
+    //商品分类名
+    private String categoryName;
+    //商品分类图
+    private String categoryImage;
     //商品创建时间
     private String createTime;
     //商品修改时间

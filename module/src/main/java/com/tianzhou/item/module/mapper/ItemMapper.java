@@ -33,4 +33,8 @@ public interface ItemMapper {
 
     //查询商品总条数
     Long countItemTotal(@Param(value = "keyword") String keyword);
+
+    //根据分类id查询商品
+    @Select("select * from item where category_id = #{categoryId} and is_deleted = 0")
+    List<Item> getItemByCategoryId(Long categoryId);
 }

@@ -3,7 +3,9 @@ package com.tianzhou.item.app.controller;
 import com.tianzhou.item.app.domain.ItemInfoVO;
 import com.tianzhou.item.app.domain.ItemListFeedVO;
 import com.tianzhou.item.app.domain.ItemListVO;
+import com.tianzhou.item.module.entity.Category;
 import com.tianzhou.item.module.entity.Item;
+import com.tianzhou.item.module.service.CategoryService;
 import com.tianzhou.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class ItemController {
 
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 查询商品分页列表，模糊查询
@@ -48,7 +52,12 @@ public class ItemController {
                     //BigDecimal转换成Float
                     .setPrice(item.getPrice().floatValue())
                     .setWallImage(wallImage);
-            //3.3添加进list中
+            //3.3根据商品分类id查询分类信息
+            Category category = categoryService.getById(item.getCategoryId());
+            if (category != null) {
+                itemListVO.setCategoryName(category.getName());
+            }
+            //3.4添加进list中
             itemListVOList.add(itemListVO);
         }
         //4.判断是否到瀑布流结尾，没有下一页
@@ -81,12 +90,20 @@ public class ItemController {
         //2.按照$分割cover_images
         String coverImages = item.getCoverImages();
         String[] split = coverImages.split("\\$");
-        //3.封装ItemInfoVO属性并返回
-        return new ItemInfoVO().setCoverImages(Arrays.asList(split))
+        //3.封装VO
+        ItemInfoVO itemInfoVO = new ItemInfoVO().setCoverImages(Arrays.asList(split))
                 .setName(item.getName())
                 //BigDecimal转换成Float
                 .setPrice(item.getPrice().floatValue())
                 .setIntroduction(item.getIntroduction());
+        //3.根据商品分类id查询分类信息
+        Category category = categoryService.getById(item.getCategoryId());
+        if (category != null) {
+            itemInfoVO.setCategoryName(category.getName())
+                    .setCategoryImage(category.getImage());
+        }
+        //4.封装ItemInfoVO属性并返回
+        return itemInfoVO;
     }
 
     /**

@@ -3,25 +3,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace 必须对应Mapper接口全类名 -->
 <mapper namespace="com.tianzhou.item.module.mapper.ItemMapper">
-    <insert id="insert" parameterType="com.tianzhou.item.module.entity.Item" useGeneratedKeys="true"
-            keyProperty="id">
-        insert into item(
-        <if test="item.coverImages != null and item.coverImages != ''">cover_images,</if>
-        <if test="item.name != null and item.name != ''">name,</if>
-        <if test="item.price != null">price,</if>
-        <if test="item.introduction != null and item.introduction != ''">introduction,</if>
-        <if test="item.createTime != null">create_time,</if>
-        <if test="item.updateTime != null">update_time,</if>
-        <if test="item.isDeleted != null">is_deleted</if>)
-        values (
-        <if test="item.coverImages != null and item.coverImages != ''">#{item.coverImages},</if>
-        <if test="item.name != null and item.name != ''">#{item.name},</if>
-        <if test="item.price != null">#{item.price},</if>
-        <if test="item.introduction != null and item.introduction != ''">#{item.introduction},</if>
-        <if test="item.createTime != null">#{item.createTime},</if>
-        <if test="item.updateTime != null">#{item.updateTime},</if>
-        <if test="item.isDeleted != null">#{item.isDeleted}</if>
-        )
+    <insert id="insert" parameterType="com.tianzhou.item.module.entity.Item"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="item.coverImages != null and item.coverImages != ''">cover_images,</if>
+            <if test="item.name != null and item.name != ''">name,</if>
+            <if test="item.price != null">price,</if>
+            <if test="item.introduction != null and item.introduction != ''">introduction,</if>
+            <if test="item.createTime != null">create_time,</if>
+            <if test="item.updateTime != null">update_time,</if>
+            <if test="item.isDeleted != null">is_deleted,</if>
+            <if test="item.categoryId != null">category_id,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="item.coverImages != null and item.coverImages != ''">#{item.coverImages},</if>
+            <if test="item.name != null and item.name != ''">#{item.name},</if>
+            <if test="item.price != null">#{item.price},</if>
+            <if test="item.introduction != null and item.introduction != ''">#{item.introduction},</if>
+            <if test="item.createTime != null">#{item.createTime},</if>
+            <if test="item.updateTime != null">#{item.updateTime},</if>
+            <if test="item.isDeleted != null">#{item.isDeleted},</if>
+            <if test="item.categoryId != null">#{item.categoryId},</if>
+        </trim>
     </insert>
 
     <update id="update" parameterType="com.tianzhou.item.module.entity.Item">
@@ -31,13 +36,14 @@
             <if test="item.name != null and item.name != ''">name = #{item.name},</if>
             <if test="item.price != null">price = #{item.price},</if>
             <if test="item.introduction != null and item.introduction != ''">introduction = #{item.introduction},</if>
-            <if test="item.updateTime != null">update_time = #{item.updateTime}</if>
+            <if test="item.updateTime != null">update_time = #{item.updateTime},</if>
+            <if test="item.categoryId != null">category_id = #{item.categoryId},</if>
         </set>
         where id = #{item.id}
     </update>
 
     <select id="selectItemPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.Item">
-        select id, cover_images, name, price
+        select *
         from item
         where is_deleted = 0
         <if test="keyword != null and keyword != ''">

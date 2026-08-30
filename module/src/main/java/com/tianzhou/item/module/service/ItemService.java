@@ -1,5 +1,6 @@
 package com.tianzhou.item.module.service;
 
+import com.tianzhou.item.module.entity.Category;
 import com.tianzhou.item.module.entity.Item;
 import com.tianzhou.item.module.mapper.ItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,13 @@ import java.util.List;
 public class ItemService {
     @Autowired
     private ItemMapper itemMapper;
+    @Autowired
+    private CategoryService categoryService;
+
+    //根据分类id查询商品
+    public List<Item> getItemByCategoryId(Long categoryId) {
+        return itemMapper.getItemByCategoryId(categoryId);
+    }
 
     //根据商品id查询商品详情，需要判断逻辑删除标记（is_deleted）
     public Item getById(Long id) {
@@ -34,7 +42,7 @@ public class ItemService {
     }
 
     //将insert，update合成成edit
-    public Long edit(Long id, String coverImages, String name, Float price, String introduction) {
+    public Long edit(Long id, String coverImages, String name, Float price, String introduction, Long categoryId) {
         //1. 校验参数
         //1.1 校验coverImages
         if (coverImages == null || coverImages.trim().isEmpty()) {
@@ -61,12 +69,19 @@ public class ItemService {
         if (introduction.length() > 2000) {
             throw new RuntimeException("introduction length cannot exceed 2000");
         }
+        //1.5 校验categoryId
+        //根据商品分类id查询分类信息
+        Category category = categoryService.getById(categoryId);
+        if (category == null) {
+            throw new RuntimeException("category id not exist");
+        }
 
         //2.创建item对象
         Item item = new Item().setCoverImages(coverImages)
                 .setName(name)
                 .setPrice(BigDecimal.valueOf(price))
-                .setIntroduction(introduction);
+                .setIntroduction(introduction)
+                .setCategoryId(categoryId);
 
         //3. 根据id是否为null来决定进入的是insert分支还是update分支
         //3.1 id为null，进入insert分支

@@ -4,7 +4,9 @@ import com.tianzhou.item.console.domain.ItemDTO;
 import com.tianzhou.item.console.domain.ItemInfoVO;
 import com.tianzhou.item.console.domain.ItemListFeedVO;
 import com.tianzhou.item.console.domain.ItemListVO;
+import com.tianzhou.item.module.entity.Category;
 import com.tianzhou.item.module.entity.Item;
+import com.tianzhou.item.module.service.CategoryService;
 import com.tianzhou.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import java.util.List;
 public class ItemController {
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 新增商品
@@ -38,11 +42,12 @@ public class ItemController {
             @RequestParam(value = "coverImages") String coverImages,
             @RequestParam(value = "name") String name,
             @RequestParam(value = "price") Float price,
-            @RequestParam(value = "introduction") String introduction
+            @RequestParam(value = "introduction") String introduction,
+            @RequestParam(value = "categoryId") Long categoryId
     ) {
-        log.info("新增商品，coverImages:{}，name:{}，price:{}，introduction:{}", coverImages, name, price, introduction);
+        log.info("新增商品，coverImages:{}，name:{}，price:{}，introduction:{},categoryId:{}", coverImages, name, price, introduction, categoryId);
         try {
-            Long itemId = itemService.edit(null, coverImages, name, price, introduction);
+            Long itemId = itemService.edit(null, coverImages, name, price, introduction, categoryId);
             return "自增id是：" + itemId;
         } catch (RuntimeException e) {
             log.error("an error occurred", e);
@@ -71,11 +76,12 @@ public class ItemController {
             @RequestParam(value = "coverImages") String coverImages,
             @RequestParam(value = "name") String name,
             @RequestParam(value = "price") Float price,
-            @RequestParam(value = "introduction") String introduction
+            @RequestParam(value = "introduction") String introduction,
+            @RequestParam(value = "categoryId") Long categoryId
     ) {
-        log.info("根据商品id修改商品，itemId:{}，coverImages:{}，name:{}，price:{}，introduction:{}", id, coverImages, name, price, introduction);
+        log.info("根据商品id修改商品，itemId:{}，coverImages:{}，name:{}，price:{}，introduction:{},categoryId:{}", id, coverImages, name, price, introduction, categoryId);
         try {
-            Long itemId = itemService.edit(id, coverImages, name, price, introduction);
+            Long itemId = itemService.edit(id, coverImages, name, price, introduction, categoryId);
             return "修改商品的id是：" + itemId;
         } catch (RuntimeException e) {
             log.error("an error occurred", e);
@@ -127,6 +133,11 @@ public class ItemController {
                     .setWallImage(wallImage)
                     .setName(item.getName())
                     .setPrice(item.getPrice().floatValue());
+            //4.3 根据商品分类id查询分类信息
+            Category category = categoryService.getById(item.getCategoryId());
+            if (category != null) {
+                itemListVO.setCategoryName(category.getName());
+            }
             //4.3 放进集合
             itemListVOList.add(itemListVO);
         }
@@ -166,18 +177,24 @@ public class ItemController {
         //2.5转换成对应时间格式
         String createTime = createLocalDateTime.format(pattern);
         String updateTime = updateLocalDateTime.format(pattern);
-
         //3.解析轮播图
         String[] coverImages = item.getCoverImages().split("\\$");
-
-        //4.封装ItemInfoVO并返回
-        return new ItemInfoVO().setCoverImages(Arrays.asList(coverImages))
+        //4.封装VO
+        ItemInfoVO itemInfoVO = new ItemInfoVO().setCoverImages(Arrays.asList(coverImages))
                 .setName(item.getName())
                 //将BigDecimal转换成Float
                 .setPrice(item.getPrice().floatValue())
                 .setIntroduction(item.getIntroduction())
                 .setCreateTime(createTime)
                 .setUpdateTime(updateTime);
+        //5.根据商品分类id查询分类信息
+        Category category = categoryService.getById(item.getCategoryId());
+        if (category != null) {
+            itemInfoVO.setCategoryName(category.getName())
+                    .setCategoryImage(category.getImage());
+        }
+        //6.封装ItemInfoVO并返回
+        return itemInfoVO;
     }
 
     /**

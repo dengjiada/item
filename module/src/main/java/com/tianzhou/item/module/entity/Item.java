@@ -28,4 +28,6 @@ public class Item {
     private Integer updateTime = (int) (System.currentTimeMillis() / 1000L);
     //是否已经被删除
     private Integer isDeleted;
+    //商品分类id
+    private Long categoryId;
 }
