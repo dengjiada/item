@@ -128,6 +128,7 @@ public class ItemService {
     public List<Item> selectItemPage(int page, int pageSize, String keyword) {
         //1.计算offset
         int offset = (page - 1) * pageSize;
+
         //2.调用mapper，查询分页数据
         return itemMapper.selectItemPage(offset, pageSize, keyword);
     }

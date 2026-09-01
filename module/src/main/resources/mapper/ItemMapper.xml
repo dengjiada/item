@@ -45,19 +45,23 @@
     <select id="selectItemPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.Item">
         select *
         from item
-        where is_deleted = 0
-        <if test="keyword != null and keyword != ''">
-            and name like concat('%', #{keyword}, '%')
-        </if>
+        <where>
+            <if test="keyword != null and keyword != ''">
+                name like concat('%', #{keyword}, '%')
+            </if>
+            and is_deleted = 0
+        </where>
         order by id
         limit #{offset},#{pageSize}
     </select>
 
     <select id="countItemTotal" resultType="java.lang.Long" parameterType="java.lang.String">
         select count(*) from item
-        where is_deleted = 0
-        <if test="keyword != null and keyword != ''">
-            and name like concat('%',#{keyword},'%')
-        </if>
+        <where>
+            <if test="keyword != null and keyword != ''">
+                name like concat('%',#{keyword},'%')
+            </if>
+            and is_deleted = 0
+        </where>
     </select>
 </mapper>

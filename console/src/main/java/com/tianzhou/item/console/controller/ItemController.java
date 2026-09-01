@@ -119,28 +119,33 @@ public class ItemController {
                                @RequestParam(value = "keyword", required = false) String keyword) {
         //1.先定死pageSize=10
         int pageSize = 10;
+
         //2.查询分页数据
         List<Item> itemList = itemService.selectItemPage(page, pageSize, keyword);
+
         //3.查询符合条件的总条数
         Long total = itemService.countItemTotal(keyword);
+
         //4.封装ItemListVO
         List<ItemListVO> itemListVOList = new ArrayList<>(itemList.size());
         for (Item item : itemList) {
-            //4.1 按照$分割，拿到wallImage
+            //4.1 根据商品分类id查询分类信息
+            Category category = categoryService.getById(item.getCategoryId());
+            if (category == null) {
+                continue;
+            }
+            //4.2 按照$分割，拿到wallImage
             String wallImage = item.getCoverImages().split("\\$")[0];
-            //4.2 往vo里设置属性
+            //4.3 往vo里设置属性
             ItemListVO itemListVO = new ItemListVO().setItemId(item.getId())
                     .setWallImage(wallImage)
                     .setName(item.getName())
-                    .setPrice(item.getPrice().floatValue());
-            //4.3 根据商品分类id查询分类信息
-            Category category = categoryService.getById(item.getCategoryId());
-            if (category != null) {
-                itemListVO.setCategoryName(category.getName());
-            }
-            //4.3 放进集合
+                    .setPrice(item.getPrice().floatValue())
+                    .setCategoryName(category.getName());
+            //4.4 放进集合
             itemListVOList.add(itemListVO);
         }
+
         //5.返回
         return new ItemListFeedVO().setList(itemListVOList)
                 .setTotal(total)
@@ -162,39 +167,43 @@ public class ItemController {
             //返回一个VO空对象，这个阶段先这样搞，后续可能修改
             return new ItemInfoVO();
         }
+
         //不为空
-        //2.解析item的创建时间和更新时间
-        //2.1拿到创建时间和更新时间的时间戳
+        //2.根据商品分类id查询分类信息
+        Category category = categoryService.getById(item.getCategoryId());
+        if (category == null) {
+            //todo 先返回null，后续会改掉
+            return new ItemInfoVO();
+        }
+
+        //3.解析item的创建时间和更新时间
+        //3.1拿到创建时间和更新时间的时间戳
         Integer itemCreateTime = item.getCreateTime();
         Integer itemUpdateTime = item.getUpdateTime();
-        //2.2指定要转化的时间格式
+        //3.2指定要转化的时间格式
         DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        //2.3指定所在时区
+        //3.3指定所在时区
         ZoneId zone = ZoneId.of("Asia/Shanghai");
-        //2.4将时间戳转换成LocalDateTime
+        //3.4将时间戳转换成LocalDateTime
         LocalDateTime createLocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(itemCreateTime.longValue()), zone);
         LocalDateTime updateLocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(itemUpdateTime.longValue()), zone);
-        //2.5转换成对应时间格式
+        //3.5转换成对应时间格式
         String createTime = createLocalDateTime.format(pattern);
         String updateTime = updateLocalDateTime.format(pattern);
-        //3.解析轮播图
+
+        //4.解析轮播图
         String[] coverImages = item.getCoverImages().split("\\$");
-        //4.封装VO
-        ItemInfoVO itemInfoVO = new ItemInfoVO().setCoverImages(Arrays.asList(coverImages))
+
+        //5.封装ItemInfoVO并返回
+        return new ItemInfoVO().setCoverImages(Arrays.asList(coverImages))
                 .setName(item.getName())
                 //将BigDecimal转换成Float
                 .setPrice(item.getPrice().floatValue())
                 .setIntroduction(item.getIntroduction())
                 .setCreateTime(createTime)
-                .setUpdateTime(updateTime);
-        //5.根据商品分类id查询分类信息
-        Category category = categoryService.getById(item.getCategoryId());
-        if (category != null) {
-            itemInfoVO.setCategoryName(category.getName())
-                    .setCategoryImage(category.getImage());
-        }
-        //6.封装ItemInfoVO并返回
-        return itemInfoVO;
+                .setUpdateTime(updateTime)
+                .setCategoryName(category.getName())
+                .setCategoryImage(category.getImage());
     }
 
     /**
