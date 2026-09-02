@@ -2,6 +2,7 @@ package com.tianzhou.item.module.service;
 
 import com.tianzhou.item.module.entity.Category;
 import com.tianzhou.item.module.entity.Item;
+import com.tianzhou.item.module.entity.ItemWithCategory;
 import com.tianzhou.item.module.mapper.ItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -131,6 +132,15 @@ public class ItemService {
 
         //2.调用mapper，查询分页数据
         return itemMapper.selectItemPage(offset, pageSize, keyword);
+    }
+
+    //联表查询商品列表分页数据
+    public List<ItemWithCategory> selectItemWithCategoryPage(int page, int pageSize, String keyword) {
+        //1.计算offset
+        int offset = (page - 1) * pageSize;
+
+        //2.调用mapper，查询分页数据
+        return itemMapper.selectItemWithCategoryPage(offset, pageSize, keyword);
     }
 
     //查询商品总条数

@@ -1,6 +1,7 @@
 package com.tianzhou.item.module.mapper;
 
 import com.tianzhou.item.module.entity.Item;
+import com.tianzhou.item.module.entity.ItemWithCategory;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -30,6 +31,9 @@ public interface ItemMapper {
 
     //根据分页参数查询分页数据
     List<Item> selectItemPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize, @Param(value = "keyword") String keyword);
+
+    //联表根据分页参数查询分页数据
+    List<ItemWithCategory> selectItemWithCategoryPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize, @Param(value = "keyword") String keyword);
 
     //查询商品总条数
     Long countItemTotal(@Param(value = "keyword") String keyword);

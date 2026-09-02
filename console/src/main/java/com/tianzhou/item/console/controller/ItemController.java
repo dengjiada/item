@@ -6,6 +6,7 @@ import com.tianzhou.item.console.domain.ItemListFeedVO;
 import com.tianzhou.item.console.domain.ItemListVO;
 import com.tianzhou.item.module.entity.Category;
 import com.tianzhou.item.module.entity.Item;
+import com.tianzhou.item.module.entity.ItemWithCategory;
 import com.tianzhou.item.module.service.CategoryService;
 import com.tianzhou.item.module.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
@@ -120,28 +121,27 @@ public class ItemController {
         //1.先定死pageSize=10
         int pageSize = 10;
 
-        //2.查询分页数据
-        List<Item> itemList = itemService.selectItemPage(page, pageSize, keyword);
+        //2.用联表查询分页数据
+        List<ItemWithCategory> itemWithCategoryListList = itemService.selectItemWithCategoryPage(page, pageSize, keyword);
 
         //3.查询符合条件的总条数
         Long total = itemService.countItemTotal(keyword);
 
         //4.封装ItemListVO
-        List<ItemListVO> itemListVOList = new ArrayList<>(itemList.size());
-        for (Item item : itemList) {
-            //4.1 根据商品分类id查询分类信息
-            Category category = categoryService.getById(item.getCategoryId());
-            if (category == null) {
+        List<ItemListVO> itemListVOList = new ArrayList<>(itemWithCategoryListList.size());
+        for (ItemWithCategory itemWithCategory : itemWithCategoryListList) {
+            //4.1 根据商品分类id查询分类信息  改为  分类名为空即跳过展示
+            if (itemWithCategory.getCategoryName() == null) {
                 continue;
             }
             //4.2 按照$分割，拿到wallImage
-            String wallImage = item.getCoverImages().split("\\$")[0];
+            String wallImage = itemWithCategory.getCoverImages().split("\\$")[0];
             //4.3 往vo里设置属性
-            ItemListVO itemListVO = new ItemListVO().setItemId(item.getId())
+            ItemListVO itemListVO = new ItemListVO().setItemId(itemWithCategory.getItemId())
                     .setWallImage(wallImage)
-                    .setName(item.getName())
-                    .setPrice(item.getPrice().floatValue())
-                    .setCategoryName(category.getName());
+                    .setName(itemWithCategory.getItemName())
+                    .setPrice(itemWithCategory.getPrice().floatValue())
+                    .setCategoryName(itemWithCategory.getCategoryName());
             //4.4 放进集合
             itemListVOList.add(itemListVO);
         }

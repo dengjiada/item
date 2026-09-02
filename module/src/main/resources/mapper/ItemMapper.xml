@@ -47,21 +47,51 @@
         from item
         <where>
             <if test="keyword != null and keyword != ''">
-                name like concat('%', #{keyword}, '%')
+                name like concat('%',#{keyword},'%')
             </if>
             and is_deleted = 0
         </where>
         order by id
-        limit #{offset},#{pageSize}
+        limit #{offset},#{pageSize};
+    </select>
+
+    <select id="selectItemWithCategoryPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.ItemWithCategory">
+        select i.id as itemId,
+        i.cover_images,
+        i.name as itemName,
+        i.price,
+        i.introduction,
+        i.create_time as itemCreateTime,
+        i.update_time as itemUpdateTime,
+        i.is_deleted as itemIsDeleted,
+        c.id as categoryId,
+        c.name as categoryName,
+        c.image,
+        c.create_time as categoryCreateTime,
+        c.update_time as categoryUpdateTime,
+        c.is_deleted as categoryIsDeleted
+        from item i
+        join category c on i.category_id = c.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (i.name like concat('%',#{keyword},'%') or c.name like concat('%',#{keyword},'%'))
+            </if>
+            and i.is_deleted = 0
+            and c.is_deleted = 0
+        </where>
+        order by i.id
+        limit #{offset},#{pageSize};
     </select>
 
     <select id="countItemTotal" resultType="java.lang.Long" parameterType="java.lang.String">
-        select count(*) from item
+        select count(*) from item i
+        join category c on i.category_id = c.id
         <where>
             <if test="keyword != null and keyword != ''">
-                name like concat('%',#{keyword},'%')
+                (i.name like concat('%',#{keyword},'%') or c.name like concat('%',#{keyword},'%'))
             </if>
-            and is_deleted = 0
+            and i.is_deleted = 0
+            and c.is_deleted = 0
         </where>
     </select>
 </mapper>
