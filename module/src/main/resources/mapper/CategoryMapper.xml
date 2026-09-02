@@ -61,4 +61,11 @@
         </set>
         where id = #{entity.id}
     </update>
+
+    <select id="selectCategoryIdsByCategoryName" resultType="java.lang.Long" parameterType="java.lang.String">
+        select id
+        from category
+        where name like concat('%', #{keyword}, '%')
+          and is_deleted = 0
+    </select>
 </mapper>

@@ -54,4 +54,9 @@ public class CategoryService {
     public List<Category> list() {
         return categoryMapper.list();
     }
+
+    //根据关键词查询符合的商品id
+    public List<Long> selectCategoryIdsByCategoryName(String keyword) {
+        return categoryMapper.selectCategoryIdsByCategoryName(keyword);
+    }
 }

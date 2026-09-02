@@ -30,7 +30,7 @@ public interface ItemMapper {
     int delete(@Param(value = "id") Long id, @Param(value = "timeStamp") int timeStamp);
 
     //根据分页参数查询分页数据
-    List<Item> selectItemPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize, @Param(value = "keyword") String keyword);
+    List<Item> selectItemPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize, @Param(value = "keyword") String keyword, @Param(value = "ids") String ids);
 
     //联表根据分页参数查询分页数据
     List<ItemWithCategory> selectItemWithCategoryPage(@Param(value = "offset") int offset, @Param(value = "pageSize") int pageSize, @Param(value = "keyword") String keyword);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -129,9 +130,24 @@ public class ItemService {
     public List<Item> selectItemPage(int page, int pageSize, String keyword) {
         //1.计算offset
         int offset = (page - 1) * pageSize;
+        String ids = null;
+        //关键词不为空
+        if (keyword != null && !keyword.isEmpty()) {
+            //2.1 子sql，查询符合的商品分类ids
+            List<Long> idList = categoryService.selectCategoryIdsByCategoryName(keyword);
+            //2.2 拼接ids
+            if (idList.isEmpty()) {
+                ids = "0";
+            } else {
+                ids = idList.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(","));
+            }
+        }
 
-        //2.调用mapper，查询分页数据
-        return itemMapper.selectItemPage(offset, pageSize, keyword);
+        //3.调用mapper，查询分页数据
+        //如果keyword为空的话，就意味着要查询所有商品，就没必要再查询分类表了，即ids为null
+        return itemMapper.selectItemPage(offset, pageSize, keyword, ids);
     }
 
     //联表查询商品列表分页数据

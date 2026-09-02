@@ -40,4 +40,7 @@ public interface CategoryMapper {
     //查询分类列表
     @Select("select * from category where is_deleted = 0")
     List<Category> list();
+
+    //根据关键词查询符合的商品id
+    List<Long> selectCategoryIdsByCategoryName(String keyword);
 }

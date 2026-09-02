@@ -43,20 +43,19 @@
     </update>
 
     <select id="selectItemPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.Item">
-        select i.*
-        from item i
+        select *
+        from item
         <where>
             <if test="keyword != null and keyword != ''">
-                (i.name like concat('%', #{keyword}, '%') or
-                i.category_id in
-                (select c.id from category c
-                where
-                c.name like concat('%', #{keyword}, '%') and c.is_deleted = 0))
+                (name like concat('%', #{keyword}, '%') or
+                category_id in
+                (${ids})
+                    )
             </if>
-            and i.is_deleted = 0
+            and is_deleted = 0
         </where>
-        order by i.id
-        limit #{offset},#{pageSize};
+        order by id
+        limit #{offset},#{pageSize}
     </select>
 
     <select id="selectItemWithCategoryPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.ItemWithCategory">
