@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -102,7 +101,7 @@ public class CategoryController {
     @RequestMapping("/category/create")
     public String create(@RequestParam(value = "name") String name,
                          @RequestParam(value = "image") String image) {
-        int rows = categoryService.insert(name, image);
+        int rows = categoryService.insert(name.trim(), image);
         return rows > 0 ? "成功" : "失败";
     }
 
@@ -118,7 +117,7 @@ public class CategoryController {
     public String update(@RequestParam(value = "categoryId") Long id,
                          @RequestParam(value = "name") String name,
                          @RequestParam(value = "image") String image) {
-        int rows = categoryService.update(id, name, image);
+        int rows = categoryService.update(id, name.trim(), image);
         return rows > 0 ? "成功" : "失败";
     }
 
@@ -133,7 +132,7 @@ public class CategoryController {
         //1.先根据分类id查询该分类下的商品
         List<Item> itemList = itemService.getItemByCategoryId(id);
         //2.如果有商品，那么该分类则不能删除
-        if (!CollectionUtils.isEmpty(itemList)){
+        if (!CollectionUtils.isEmpty(itemList)) {
             return "当前分类下有商品，不能删除";
         }
         //3.如果没有商品，正常删除

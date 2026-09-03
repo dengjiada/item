@@ -47,11 +47,11 @@ public class ItemService {
     public Long edit(Long id, String coverImages, String name, Float price, String introduction, Long categoryId) {
         //1. 校验参数
         //1.1 校验coverImages
-        if (coverImages == null || coverImages.trim().isEmpty()) {
+        if (coverImages == null || coverImages.isEmpty()) {
             throw new RuntimeException("coverImages cannot be empty");
         }
         //1.2 校验name
-        if (name == null || name.trim().isEmpty()) {
+        if (name == null || name.isEmpty()) {
             throw new RuntimeException("name cannot be empty");
         }
         if (name.length() > 50) {
@@ -101,9 +101,6 @@ public class ItemService {
         }
         //3.2 id不为null，进入update分支
         //3.2.1 校验id
-        if (id <= 0) {
-            throw new RuntimeException("id must greater than 0");
-        }
         //查询id对应的entity是否在数据库中
         Item item1 = extractById(id);
         if (item1 == null) {

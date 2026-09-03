@@ -35,6 +35,11 @@ public class ItemController {
     public ItemListFeedVO list(@RequestParam(value = "page") Integer page,
                                @RequestParam(value = "keyword", required = false) String keyword) {
         log.info("===查询商品列表===");
+        //对keyword进行trim
+        if (keyword != null) {
+            keyword = keyword.trim();
+        }
+
         //1.先定死pageSize是10
         int pageSize = 10;
 

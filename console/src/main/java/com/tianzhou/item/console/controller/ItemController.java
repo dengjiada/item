@@ -48,7 +48,7 @@ public class ItemController {
     ) {
         log.info("新增商品，coverImages:{}，name:{}，price:{}，introduction:{},categoryId:{}", coverImages, name, price, introduction, categoryId);
         try {
-            Long itemId = itemService.edit(null, coverImages, name, price, introduction, categoryId);
+            Long itemId = itemService.edit(null, coverImages, name.trim(), price, introduction, categoryId);
             return "自增id是：" + itemId;
         } catch (RuntimeException e) {
             log.error("an error occurred", e);
@@ -82,7 +82,7 @@ public class ItemController {
     ) {
         log.info("根据商品id修改商品，itemId:{}，coverImages:{}，name:{}，price:{}，introduction:{},categoryId:{}", id, coverImages, name, price, introduction, categoryId);
         try {
-            Long itemId = itemService.edit(id, coverImages, name, price, introduction, categoryId);
+            Long itemId = itemService.edit(id, coverImages, name.trim(), price, introduction, categoryId);
             return "修改商品的id是：" + itemId;
         } catch (RuntimeException e) {
             log.error("an error occurred", e);
@@ -118,6 +118,11 @@ public class ItemController {
     @RequestMapping("/item/list")
     public ItemListFeedVO list(@RequestParam(value = "page") Integer page,
                                @RequestParam(value = "keyword", required = false) String keyword) {
+        //对keyword进行trim
+        if (keyword != null) {
+            keyword = keyword.trim();
+        }
+
         //1.先定死pageSize=10
         int pageSize = 10;
 
