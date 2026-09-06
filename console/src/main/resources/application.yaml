@@ -8,6 +8,10 @@ spring:
     url: jdbc:mysql://localhost:3306/myitem?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
     password: 1234
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 # MyBatis-Plus配置
 mybatis-plus:
@@ -24,3 +28,7 @@ logging:
   level:
     # root：全局所有包默认级别
     root: INFO
+
+file:
+  upload:
+    root-path: ./data
