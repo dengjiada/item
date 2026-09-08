@@ -37,3 +37,5 @@ Thumbs.db
 
 # 本地生成的目录树文件，不上传
 tree.txt
+
+data/upload/
