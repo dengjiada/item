@@ -32,3 +32,10 @@ logging:
 file:
   upload:
     root-path: ./data
+
+aliyun:
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucket-name: item-java
+    region: cn-beijing
+    domain: https://item-java.oss-cn-beijing.aliyuncs.com

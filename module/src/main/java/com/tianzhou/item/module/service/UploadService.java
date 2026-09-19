@@ -1,5 +1,15 @@
 package com.tianzhou.item.module.service;
 
+import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSException;
+import com.aliyun.oss.model.ObjectMetadata;
+import com.aliyun.oss.model.PutObjectRequest;
+import com.aliyun.oss.model.PutObjectResult;
+import com.tianzhou.item.module.entity.File;
+import com.tianzhou.item.module.enums.FileTypeEnum;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -7,23 +17,42 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 @Service
 public class UploadService {
+    @Autowired
+    private OSS ossClient;
+
+    @Value("${aliyun.oss.bucket-name}")
+    private String bucketName;
+
+    @Value("${aliyun.oss.domain}")
+    private String domain;
+
+    @Autowired
+    private FileService fileService;
+
     //上传图片/视频/文件
-    public String upload(String originalFilename, String contentType, byte[] fileBytes, String rootPath) throws IOException {
-        //1. 随机random(1~1000)的数
+    public String upload(String type, String originalFilename, byte[] fileBytes, String contentType) throws IOException, com.aliyuncs.exceptions.ClientException {
+        // 根据文件类型获得对应的枚举
+        FileTypeEnum fileType = FileTypeEnum.fromOssDir(type);
+
+        // 获得yyMM/dd
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyMM/dd");
+        String format = now.format(pattern);
+
+        // 随机random(1~1000)的数
         Random random = new Random();
         int randomNum = random.nextInt(1, 1001);
 
-        //2. 毫秒级时间戳
+        // 毫秒级时间戳
         long currentTimeMillis = System.currentTimeMillis();
 
-        //3. 获得原尾缀
+        // 获得原尾缀
         if (originalFilename == null || originalFilename.isEmpty()) {
             throw new RuntimeException("Filename cannot be empty");
         }
@@ -35,48 +64,73 @@ public class UploadService {
             extension = "file";
         }
 
+        // 去掉开头的斜杠
+        String cleanDir = fileType.getOssDir().startsWith("/") ? fileType.getOssDir().substring(1) : fileType.getOssDir();
         String newFileName;//新文件名
-        String fileType;//文件类型
 
-        //4. 判断文件是image/video/file中的哪一种
-        if (contentType != null && contentType.startsWith("image/")) {
-            fileType = "image";
+        // 判断文件是image/video/file中的哪一种
+        if (fileType == FileTypeEnum.IMAGE) {
             //image
             try (InputStream inputStream = new ByteArrayInputStream(fileBytes)) {
                 BufferedImage image = ImageIO.read(inputStream);
                 if (image == null) {
                     throw new RuntimeException("Cannot parse image format. Please upload a valid image file");
                 }
-                //5. 获得宽和高
+                // 获得宽和高
                 int width = image.getWidth();
                 int height = image.getHeight();
-                //6. 拼接新文件名
-                newFileName = String.valueOf(randomNum) + currentTimeMillis + "_" + width + "x" + height + "." + extension;
+                // 拼接新文件名
+                newFileName = cleanDir + "/" + format + "/" + randomNum + currentTimeMillis + "_" + width + "x" + height + "." + extension;
             }
-        } else if (contentType != null && contentType.startsWith("video/")) {
-            //video
-            fileType = "video";
-
-            //5. 拼接新文件名
-            newFileName = String.valueOf(randomNum) + currentTimeMillis + "." + extension;
         } else {
-            //其余分流到file
-            fileType = "file";
+            // 如果是video或者是file
+            // 拼接新文件名
+            newFileName = cleanDir + "/" + format + "/" + randomNum + currentTimeMillis + "." + extension;
 
-            //5. 拼接新文件名
-            newFileName = String.valueOf(randomNum) + currentTimeMillis + "." + extension;
-        }
-        //6. 获取完整路径
-        Path fullPath = Paths.get(rootPath, "upload", fileType, newFileName);
-
-        //7. 创建父级路径
-        Files.createDirectories(fullPath.getParent());
-
-        //8. 将文件存入对应的路径
-        try (InputStream inputStream = new ByteArrayInputStream(fileBytes)) {
-            Files.copy(inputStream, fullPath);
         }
 
-        return "/upload/" + fileType + "/" + newFileName;
+        uploadFile(newFileName, fileBytes, contentType);
+
+        //url
+        String url = domain + "/" + newFileName;
+        //写入数据库
+        File file = new File().setType(fileType.getCode())
+                .setUrl(url)
+                .setOriginalName(originalFilename)
+                .setObjectName(newFileName)
+                .setCreateTime((int) (System.currentTimeMillis() / 1000L));
+        fileService.insert(file);
+
+        //返回的url
+        return url;
+    }
+
+    private void uploadFile(String newFileName, byte[] fileBytes, String contentType) {
+        try {
+            // 创建上传文件的元数据
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(fileBytes.length);
+            metadata.setContentType(contentType);
+
+            // 将 byte[] 转换为 ByteArrayInputStream
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(fileBytes);
+
+            // 创建 PutObjectRequest，传入的是输入流和元数据
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, newFileName, inputStream, metadata);
+            // 上传文件。
+            PutObjectResult result = ossClient.putObject(putObjectRequest);
+        } catch (OSSException oe) {
+            System.out.println("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason.");
+            System.out.println("Error Message:" + oe.getErrorMessage());
+            System.out.println("Error Code:" + oe.getErrorCode());
+            System.out.println("Request ID:" + oe.getRequestId());
+            System.out.println("Host ID:" + oe.getHostId());
+        } catch (ClientException ce) {
+            System.out.println("Caught an ClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with OSS, "
+                    + "such as not being able to access the network.");
+            System.out.println("Error Message:" + ce.getMessage());
+        }
     }
 }

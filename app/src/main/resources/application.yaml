@@ -24,3 +24,9 @@ logging:
   level:
     # root：全局所有包默认级别
     root: INFO
+aliyun:
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucket-name: item-java
+    region: cn-beijing
+    domain: https://item-java.oss-cn-beijing.aliyuncs.com
