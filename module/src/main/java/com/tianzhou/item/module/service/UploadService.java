@@ -36,7 +36,7 @@ public class UploadService {
     private FileService fileService;
 
     //上传图片/视频/文件
-    public String upload(String type, String originalFilename, byte[] fileBytes, String contentType) throws IOException, com.aliyuncs.exceptions.ClientException {
+    public String upload(String type, String originalFilename, byte[] fileBytes, String contentType) throws IOException {
         // 根据文件类型获得对应的枚举
         FileTypeEnum fileType = FileTypeEnum.fromOssDir(type);
 

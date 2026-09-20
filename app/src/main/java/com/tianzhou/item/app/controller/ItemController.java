@@ -1,14 +1,18 @@
 package com.tianzhou.item.app.controller;
 
+import com.aliyun.oss.OSS;
 import com.tianzhou.item.app.domain.ItemInfoVO;
 import com.tianzhou.item.app.domain.ItemListFeedVO;
 import com.tianzhou.item.app.domain.ItemListVO;
+import com.tianzhou.item.app.domain.WallImage;
 import com.tianzhou.item.module.entity.Category;
 import com.tianzhou.item.module.entity.Item;
 import com.tianzhou.item.module.service.CategoryService;
 import com.tianzhou.item.module.service.ItemService;
+import com.tianzhou.item.module.utils.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +29,10 @@ public class ItemController {
     private ItemService itemService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private OSS ossClient;
+    @Value("${aliyun.oss.bucket-name}")
+    private String bucketName;
 
     /**
      * 查询商品分页列表，模糊查询
@@ -61,7 +69,11 @@ public class ItemController {
                 continue;
             }
             //4.2拿到轮播图的第一张图，也就是wallImage
-            String wallImage = item.getCoverImages().split("\\$")[0];
+            String objectName = item.getCoverImages().split("\\$")[0];
+            WallImage wallImage = new WallImage().setUrl(objectName);
+            float ar = ImageUtils.getAr(ossClient,bucketName,objectName);
+            wallImage.setAr(ar);
+
             //4.3为ItemListVO赋值
             ItemListVO itemListVO = new ItemListVO().setItemId(item.getId())
                     .setName(item.getName())

@@ -1,4 +1,4 @@
-package com.tianzhou.item.console.controller;
+package com.tianzhou.item.console.controller.utils;
 
 import com.tianzhou.item.module.service.UploadService;
 import lombok.extern.slf4j.Slf4j;

@@ -13,7 +13,7 @@ public class ItemListVO {
     //商品id
     private Long itemId;
     //商品列表图（轮播图的第一张图）
-    private String wallImage;
+    private WallImage wallImage;
     //商品名字
     private String name;
     //商品价格
