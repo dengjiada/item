@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -136,9 +135,14 @@ public class ItemService {
             if (idList.isEmpty()) {
                 ids = "0";
             } else {
-                ids = idList.stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(","));
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < idList.size(); i++) {
+                    sb.append(idList.get(i));
+                    if (i != idList.size() - 1) {
+                        sb.append(",");
+                    }
+                }
+                ids = sb.toString();
             }
         }
 

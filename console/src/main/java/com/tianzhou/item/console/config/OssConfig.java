@@ -1,4 +1,4 @@
-package com.tianzhou.item.module.config;
+package com.tianzhou.item.console.config;
 
 import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
