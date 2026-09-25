@@ -41,4 +41,7 @@ public interface ItemMapper {
     //根据分类id查询商品
     @Select("select * from item where category_id = #{categoryId} and is_deleted = 0")
     List<Item> getItemByCategoryId(Long categoryId);
+
+    //批量新增商品
+    void insertBatch(@Param(value = "list") List<Item> list);
 }

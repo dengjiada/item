@@ -6,6 +6,7 @@ import com.tianzhou.item.module.entity.ItemWithCategory;
 import com.tianzhou.item.module.mapper.ItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -163,5 +164,14 @@ public class ItemService {
     //查询商品总条数
     public Long countItemTotal(String keyword) {
         return itemMapper.countItemTotal(keyword);
+    }
+
+    //批量新增商品
+    @Transactional(rollbackFor = Exception.class)
+    public void insertBatch(List<Item> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+        itemMapper.insertBatch(list);
     }
 }

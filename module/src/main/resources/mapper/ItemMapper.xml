@@ -29,6 +29,16 @@
         </trim>
     </insert>
 
+    <insert id="insertBatch" >
+        insert into item
+        (cover_images, name, price, introduction, create_time, update_time, is_deleted, category_id)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.coverImages},#{item.name},#{item.price},#{item.introduction},#{item.createTime}
+            ,#{item.updateTime},#{item.isDeleted},#{item.categoryId})
+        </foreach>
+    </insert>
+
     <update id="update" parameterType="com.tianzhou.item.module.entity.Item">
         update item
         <set>

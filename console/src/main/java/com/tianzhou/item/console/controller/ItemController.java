@@ -1,18 +1,24 @@
 package com.tianzhou.item.console.controller;
 
-import com.tianzhou.item.console.domain.ItemDTO;
-import com.tianzhou.item.console.domain.ItemInfoVO;
-import com.tianzhou.item.console.domain.ItemListFeedVO;
-import com.tianzhou.item.console.domain.ItemListVO;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.tianzhou.item.console.domain.*;
+import com.tianzhou.item.console.listener.ItemImportListener;
 import com.tianzhou.item.module.entity.Category;
 import com.tianzhou.item.module.entity.Item;
 import com.tianzhou.item.module.entity.ItemWithCategory;
 import com.tianzhou.item.module.service.CategoryService;
 import com.tianzhou.item.module.service.ItemService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -222,5 +228,74 @@ public class ItemController {
         log.info("新增商品，itemDTO:{}", itemDTO);
         int i = 1 / 0;
         return "接收DTO成功!";
+    }
+
+    @RequestMapping("/item/export")
+    public void exportItem(HttpServletResponse response) throws IOException {
+        // 设置响应头
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+
+        String fileName = URLEncoder.encode("商品信息表", "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition",
+                "attachment;filename*=utf-8''" + fileName + ".xlsx");
+
+        // 设置向浏览器输出数据的流
+        ExcelWriter writer = EasyExcel.write(response.getOutputStream()).build();
+        WriteSheet sheet = EasyExcel.writerSheet("商品信息").head(ItemExportAndImportVO.class).build();
+
+        //分页查询，每次查询2000条
+        int pageNo = 1;
+        int pageSize = 2000;
+
+        while (true) {
+            List<Item> list = itemService.selectItemPage(pageNo, pageSize, null);
+            if (list == null || list.isEmpty()) {
+                break;
+            }
+            List<ItemExportAndImportVO> voList = new ArrayList<>(list.size());
+
+            for (Item item : list) {
+                ItemExportAndImportVO vo = new ItemExportAndImportVO();
+                vo.setCoverImages(item.getCoverImages());
+                vo.setName(item.getName());
+                vo.setPrice(item.getPrice());
+                vo.setIntroduction(item.getIntroduction());
+                vo.setCreateTime(item.getCreateTime());
+                vo.setUpdateTime(item.getUpdateTime());
+                vo.setIsDeleted(item.getIsDeleted());
+                vo.setCategoryId(item.getCategoryId());
+
+                voList.add(vo);
+            }
+
+            writer.write(voList, sheet);
+            if (list.size() < pageSize) {
+                break;
+            }
+            pageNo++;
+        }
+
+        //必须finish，否则文件可能不完整
+        writer.finish();
+    }
+
+    @PostMapping("/item/import")
+    public String importItem(@RequestParam("file")MultipartFile file) throws IOException {
+        if (file.isEmpty()){
+            return "请选择一个有效的文件";
+        }
+
+        try {
+            EasyExcel.read(file.getInputStream(),
+                    ItemExportAndImportVO.class,
+                    new ItemImportListener(itemService))
+                    .sheet()
+                    .doRead();
+        } catch (Exception e) {
+            log.error("an error occurred", e);
+            return "导入失败";
+        }
+        return "导入成功";
     }
 }
