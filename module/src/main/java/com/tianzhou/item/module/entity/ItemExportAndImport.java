@@ -1,17 +1,16 @@
-package com.tianzhou.item.console.domain;
+package com.tianzhou.item.module.entity;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemExportAndImportVO {
+public class ItemExportAndImport {
     @ExcelProperty(value = "封面图", index = 0)
     private String coverImages;
     @ExcelProperty(value = "商品名", index = 1)

@@ -107,4 +107,15 @@
             and c.is_deleted = 0
         </where>
     </select>
+
+    <select id="selectItemPageByMod" resultType="com.tianzhou.item.module.entity.ItemExportAndImport">
+        select *
+        from item
+        <where>
+            mod(id,10)=#{currentMod}
+            and is_deleted = 0
+        </where>
+        order by id
+        limit #{offset},#{pageSize}
+    </select>
 </mapper>

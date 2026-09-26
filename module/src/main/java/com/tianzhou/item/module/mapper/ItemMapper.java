@@ -1,6 +1,7 @@
 package com.tianzhou.item.module.mapper;
 
 import com.tianzhou.item.module.entity.Item;
+import com.tianzhou.item.module.entity.ItemExportAndImport;
 import com.tianzhou.item.module.entity.ItemWithCategory;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -44,4 +45,6 @@ public interface ItemMapper {
 
     //批量新增商品
     void insertBatch(@Param(value = "list") List<Item> list);
+
+    List<ItemExportAndImport> selectItemPageByMod(@Param("offset") int offset,@Param("pageSize") int pageSize,@Param("currentMod") int currentMod);
 }
