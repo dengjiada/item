@@ -7,7 +7,29 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/myitem?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
-    password: 1234
+    password: HWjruzI0G/pp5PQpX0fnf3WpXZIi5hZmmEpNM5ePNyElBp/0ls+LJ7vlazhAMD00gucV/inrC2UnK4GGQn+MvQ==
+    druid:
+      initial-size: 5
+      max-active: 20
+      min-idle: 5
+      max-wait: 60000
+      # 启用 Filter
+      filter:
+        config:
+          enabled: true
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 2000
+        wall:
+          enabled: true
+      stat-view-servlet:
+        enabled: true          # 开启监控页面
+        url-pattern: /druid/*  # 访问路径
+        login-username: admin  # 登录账号
+        login-password: admin  # 登录密码
+      connection-properties: config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIHYXsX6nwsEQKA1mFqP74riDvy80y0mNlcxscAu7tV77EIffKegJstoul48DZOn1+j8W2jdY9nBBd93rxqh5MsCAwEAAQ==
+
   servlet:
     multipart:
       max-file-size: 20MB

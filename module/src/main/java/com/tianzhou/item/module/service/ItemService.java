@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
-import java.util.zip.ZipInputStream;
 
 @Service
 public class ItemService {
@@ -279,7 +278,7 @@ public class ItemService {
             //递归遍历临时目录中文件，拿到excel文件
             List<File> excelFiles = FileUtil.loopFiles(tempDir,
                     file -> file.getName().endsWith(".xlsx") || file.getName().endsWith(".xls"));
-            if (excelFiles==null||excelFiles.isEmpty()){
+            if (excelFiles == null || excelFiles.isEmpty()) {
                 return "未找到excel文件";
             }
 
@@ -290,16 +289,16 @@ public class ItemService {
 
             //多线程读取excel文件
             for (File excelFile : excelFiles) {
-                executor.submit(()->{
+                executor.submit(() -> {
                     try {
                         EasyExcel.read(excelFile,
-                                ItemExportAndImport.class,
-                                new ItemImportListener(this))
+                                        ItemExportAndImport.class,
+                                        new ItemImportListener(this))
                                 .sheet()
                                 .doRead();
-                    }catch (Exception e){
-                        errors.add(excelFile.getName()+":"+e.getMessage());
-                    }finally {
+                    } catch (Exception e) {
+                        errors.add(excelFile.getName() + ":" + e.getMessage());
+                    } finally {
                         //计数器减一
                         latch.countDown();
                     }
@@ -309,11 +308,11 @@ public class ItemService {
             //等待所有线程读取完毕
             latch.await();
 
-            if (!errors.isEmpty()){
-                return "excel文件导入失败:"+errors;
+            if (!errors.isEmpty()) {
+                return "excel文件导入失败:" + errors;
             }
             return "excel文件导入成功";
-        }finally {
+        } finally {
             //读取完后将临时目录删除
             FileUtil.del(tempDir);
         }
