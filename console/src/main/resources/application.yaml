@@ -29,7 +29,6 @@ spring:
         login-username: admin  # 登录账号
         login-password: admin  # 登录密码
       connection-properties: config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIHYXsX6nwsEQKA1mFqP74riDvy80y0mNlcxscAu7tV77EIffKegJstoul48DZOn1+j8W2jdY9nBBd93rxqh5MsCAwEAAQ==
-
   servlet:
     multipart:
       max-file-size: 20MB
@@ -45,6 +44,14 @@ mybatis-plus:
 # 占用端口
 server:
   port: 8081
+  # tomcat线程池配置
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    max-connections: 8192
+    accept-count: 100
+    connection-timeout: 20000
 
 logging:
   level:
