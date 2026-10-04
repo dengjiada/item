@@ -11,12 +11,14 @@ import com.tianzhou.item.module.enums.FileTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
@@ -52,6 +54,10 @@ public class UploadService {
         // 毫秒级时间戳
         long currentTimeMillis = System.currentTimeMillis();
 
+        String nonce = String.valueOf(randomNum) + currentTimeMillis;
+        // 使用MD5加密
+        String md5DigestAsHex = DigestUtils.md5DigestAsHex(nonce.getBytes(StandardCharsets.UTF_8));
+
         // 获得原尾缀
         if (originalFilename == null || originalFilename.isEmpty()) {
             throw new RuntimeException("Filename cannot be empty");
@@ -80,12 +86,12 @@ public class UploadService {
                 int width = image.getWidth();
                 int height = image.getHeight();
                 // 拼接新文件名
-                newFileName = cleanDir + "/" + format + "/" + randomNum + currentTimeMillis + "_" + width + "x" + height + "." + extension;
+                newFileName = cleanDir + "/" + format + "/" + md5DigestAsHex + "_" + width + "x" + height + "." + extension;
             }
         } else {
             // 如果是video或者是file
             // 拼接新文件名
-            newFileName = cleanDir + "/" + format + "/" + randomNum + currentTimeMillis + "." + extension;
+            newFileName = cleanDir + "/" + format + "/" + md5DigestAsHex + "." + extension;
 
         }
 
