@@ -5,11 +5,13 @@ import com.tianzhou.item.app.domain.ItemInfoVO;
 import com.tianzhou.item.app.domain.ItemListFeedVO;
 import com.tianzhou.item.app.domain.ItemListVO;
 import com.tianzhou.item.app.domain.WallImage;
+import com.tianzhou.item.app.utils.loginResolverUtils;
 import com.tianzhou.item.module.entity.Category;
 import com.tianzhou.item.module.entity.Item;
 import com.tianzhou.item.module.service.CategoryService;
 import com.tianzhou.item.module.service.ItemService;
 import com.tianzhou.item.module.utils.ImageUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,8 @@ public class ItemController {
     private CategoryService categoryService;
     @Autowired
     private OSS ossClient;
+    @Autowired
+    private loginResolverUtils loginResolverUtils;
     @Value("${aliyun.oss.bucket-name}")
     private String bucketName;
 
@@ -71,7 +75,7 @@ public class ItemController {
             //4.2拿到轮播图的第一张图，也就是wallImage
             String objectName = item.getCoverImages().split("\\$")[0];
             WallImage wallImage = new WallImage().setUrl(objectName);
-            float ar = ImageUtils.getAr(ossClient,bucketName,objectName);
+            float ar = ImageUtils.getAr(ossClient, bucketName, objectName);
             wallImage.setAr(ar);
 
             //4.3为ItemListVO赋值
@@ -96,7 +100,15 @@ public class ItemController {
      * @return
      */
     @RequestMapping("/item/info")
-    public ItemInfoVO getItemInfo(@RequestParam(value = "itemId") Long id) {
+    public ItemInfoVO getItemInfo(@RequestParam(value = "itemId") Long id, HttpServletRequest request) {
+        //校验是否登录
+        try {
+            Long userId = loginResolverUtils.requiredLogin(request);
+        } catch (Exception e) {
+            log.error("an error occurred", e);
+            return null;
+        }
+
         log.info("根据商品id查询商品详情，itemId:{}", id);
 
         //1.拿到item对象

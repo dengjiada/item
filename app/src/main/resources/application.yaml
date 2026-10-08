@@ -59,3 +59,6 @@ aliyun:
     bucket-name: item-java
     region: cn-beijing
     domain: https://item-java.oss-cn-beijing.aliyuncs.com
+
+jwt:
+  secret: my-very-long-secret-key-at-least-32-bytes-long-1234567890
