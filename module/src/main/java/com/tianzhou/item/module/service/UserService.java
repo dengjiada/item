@@ -115,7 +115,14 @@ public class UserService {
 
     //app端登录
     public String appLogin(String phone, String password) {
-        //校验phone和password
+        //根据手机号和密码拿到用户
+        User user = getUser(phone, password);
+
+        //返回sign
+        return buildSign(user);
+    }
+
+    private User getUser(String phone, String password) {
         //校验手机号和密码
         if (phone == null || phone.isEmpty()) {
             throw new RuntimeException("phone cannot be empty");
@@ -135,8 +142,19 @@ public class UserService {
         if (!md5Password.equals(user.getPassword())) {
             throw new RuntimeException("incorrect password");
         }
+        return user;
+    }
 
-        //返回sign
-        return buildSign(user);
+    //console端登录
+    public String consoleLogin(String phone, String password) {
+        //根据手机号和密码拿到用户
+        User user = getUser(phone, password);
+
+        //对用户id进行类序列化
+        UserTokenPayload tokenPayload = new UserTokenPayload(user.getId());
+        String jsonString = JSON.toJSONString(tokenPayload);
+
+        //构造jwt
+        return jwtUtils.generateConsoleToken(jsonString);
     }
 }
