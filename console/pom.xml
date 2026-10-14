@@ -31,6 +31,26 @@
             <artifactId>module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <!-- shiro 删掉 starter，只引入下面三个带 jakarta 分类器的核心包 -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>2.0.2</version>
+            <classifier>jakarta</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <version>2.0.2</version>
+            <classifier>jakarta</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>2.0.2</version>
+            <classifier>jakarta</classifier>
+        </dependency>
     </dependencies>
 
     <build>

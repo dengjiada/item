@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tianzhou.item.module.mapper.UserMapper">
-    <insert id="insert" parameterType="com.tianzhou.item.module.entity.User" useGeneratedKeys="true" keyProperty="id">
+<mapper namespace="com.tianzhou.item.module.user.mapper.UserMapper">
+    <insert id="insert" parameterType="com.tianzhou.item.module.user.entity.User" useGeneratedKeys="true" keyProperty="id">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides=",">
                     <if test="entity.phone != null and entity.phone != ''">
@@ -58,7 +58,7 @@
         </trim>
     </insert>
 
-    <update id="update" parameterType="com.tianzhou.item.module.entity.User">
+    <update id="update" parameterType="com.tianzhou.item.module.user.entity.User">
         update user
         <set>
                     <if test="entity.phone != null and entity.phone != ''">

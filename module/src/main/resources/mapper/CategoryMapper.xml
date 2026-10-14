@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tianzhou.item.module.mapper.CategoryMapper">
-    <insert id="insert" parameterType="com.tianzhou.item.module.entity.Category" useGeneratedKeys="true" keyProperty="id">
+<mapper namespace="com.tianzhou.item.module.category.mapper.CategoryMapper">
+    <insert id="insert" parameterType="com.tianzhou.item.module.category.entity.Category" useGeneratedKeys="true" keyProperty="id">
         insert into category
         <trim prefix="(" suffix=")" suffixOverrides=",">
                     <if test="entity.name != null and entity.name != ''">
@@ -40,7 +40,7 @@
         </trim>
     </insert>
 
-    <update id="update" parameterType="com.tianzhou.item.module.entity.Category">
+    <update id="update" parameterType="com.tianzhou.item.module.category.entity.Category">
         update category
         <set>
                     <if test="entity.name != null and entity.name != ''">

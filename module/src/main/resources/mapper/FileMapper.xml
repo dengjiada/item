@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tianzhou.item.module.mapper.FileMapper">
-    <insert id="insert" parameterType="com.tianzhou.item.module.entity.File" useGeneratedKeys="true" keyProperty="id">
+<mapper namespace="com.tianzhou.item.module.file.mapper.FileMapper">
+    <insert id="insert" parameterType="com.tianzhou.item.module.file.entity.File" useGeneratedKeys="true" keyProperty="id">
         insert into file
         <trim prefix="(" suffix=")" suffixOverrides=",">
                     <if test="entity.type != null">
@@ -52,7 +52,7 @@
         </trim>
     </insert>
 
-    <update id="update" parameterType="com.tianzhou.item.module.entity.File">
+    <update id="update" parameterType="com.tianzhou.item.module.file.entity.File">
         update file
         <set>
                     <if test="entity.type != null">

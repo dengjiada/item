@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace 必须对应Mapper接口全类名 -->
-<mapper namespace="com.tianzhou.item.module.mapper.ItemMapper">
-    <insert id="insert" parameterType="com.tianzhou.item.module.entity.Item"
+<mapper namespace="com.tianzhou.item.module.item.mapper.ItemMapper">
+    <insert id="insert" parameterType="com.tianzhou.item.module.item.entity.Item"
             useGeneratedKeys="true" keyProperty="id">
         insert into item
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -39,7 +39,7 @@
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.tianzhou.item.module.entity.Item">
+    <update id="update" parameterType="com.tianzhou.item.module.item.entity.Item">
         update item
         <set>
             <if test="item.coverImages != null and item.coverImages != ''">cover_images = #{item.coverImages},</if>
@@ -52,7 +52,7 @@
         where id = #{item.id}
     </update>
 
-    <select id="selectItemPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.Item">
+    <select id="selectItemPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.item.entity.Item">
         select *
         from item
         <where>
@@ -68,7 +68,7 @@
         limit #{offset},#{pageSize}
     </select>
 
-    <select id="selectItemWithCategoryPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.entity.ItemWithCategory">
+    <select id="selectItemWithCategoryPage" parameterType="java.util.Map" resultType="com.tianzhou.item.module.item.entity.ItemWithCategory">
         select i.id as itemId,
         i.cover_images,
         i.name as itemName,
@@ -108,7 +108,7 @@
         </where>
     </select>
 
-    <select id="selectItemPageByMod" resultType="com.tianzhou.item.module.entity.ItemExportAndImport">
+    <select id="selectItemPageByMod" resultType="com.tianzhou.item.module.item.entity.ItemExportAndImport">
         select *
         from item
         <where>
